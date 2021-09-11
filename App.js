@@ -1,29 +1,41 @@
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import React, { useState,useEffect } from 'react';
+import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
 import auth from '@react-native-firebase/auth';
+import Login from './Login'
+import Home from "./Home";
 
+const App = () => 
+{
+  const [user,setUser] = useState('');
+  useEffect(()=>{
+    auth().onAuthStateChanged((user)=>{
+      if(user)
+      {
+        setUser(user);
+      }
+      else
+      {
+        setUser("");
+      }
+    })
+    console.log(user.email);
+  },[]);
 
-import React, { useState } from 'react';
-const App = () => {
-  const [email,setEmail] = useState('');
-  const [password,setPassword] = useState('');
+  if(user)
+  {
+    
+  return(
+    <Home />
+  );
+  }
 
- const submitSignup = async () => {
- const res = await auth().createUserWithEmailAndPassword(email,password);
-console.log("==============="+res.user);
+  return(
+    <Login />
+  )
 
   }
-  return (
-    
-      <View style={{justifyContent:'center',alignItems:'center',backgroundColor:'white',flex:1}}>
-        <TextInput onChangeText={(text=>setEmail(text))} placeholder="Enter Item" style={{borderWidth:1,borderColor:'black',color:'black',width:200 }} />
-        <TextInput onChangeText={(text=>setPassword(text))} placeholder="Enter Item" style={{borderWidth:1,borderColor:'black',color:'black',width:200 }} />
+   
 
-        <TouchableOpacity onPress={submitSignup} style={{marginTop:20}}>
-          <Text>Sign Up</Text>
-        </TouchableOpacity>
-        
-      </View>
-  )
-}
+
 
 export default App
